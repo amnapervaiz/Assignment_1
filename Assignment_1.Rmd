@@ -1,0 +1,209 @@
+---
+title: "Assignment_1"
+author: "Amna Pervaiz"
+date: "9/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r load packages, message=FALSE}
+library(sf)
+library(tidyverse)
+library(ggspatial)
+library(ggthemes)
+
+```
+
+```{r}
+boundary <- st_read("https://bostonopendata-boston.opendata.arcgis.com/datasets/142500a77e2a4dbeb94a86f7e0b568bc_9.kml?outSR=%7B%22latestWkid%22%3A2249%2C%22wkid%22%3A102686%7D", quiet = TRUE)
+
+nhood <- st_read("https://bostonopendata-boston.opendata.arcgis.com/datasets/3525b0ee6e6b427f9aab5d0a1d0a1a28_0.kml?outSR=%7B%22latestWkid%22%3A2249%2C%22wkid%22%3A102686%7D", quiet = TRUE)
+
+pschools <- st_read("https://bostonopendata-boston.opendata.arcgis.com/datasets/1d9509a8b2fd485d9ad471ba2fdb1f90_0.kml?outSR=%7B%22latestWkid%22%3A2249%2C%22wkid%22%3A102686%7D", quiet = TRUE)
+
+```
+
+```{r}
+boundary_plot <- ggplot(boundary) +
+  geom_sf()
+
+boundary_plot
+```
+
+```{r}
+nhood_plot <- ggplot(nhood) +
+  geom_sf()
+
+nhood_plot
+```
+
+```{r}
+pschools_plot <- ggplot(pschools) +
+  geom_sf()
+
+pschools_plot
+```
+
+```{r}
+jpeg("boundary.jpg", width = 5, height = 3, units = "in", res = 300)
+boundary_plot
+dev.off()
+
+png("boundary.png", width = 5, height = 3, units = "in", res = 300)
+boundary_plot
+dev.off()
+
+pdf("boundary.pdf", width = 5, height = 3)
+boundary_plot
+dev.off()
+```
+
+```{r}
+jpeg("nhood.jpg", width = 5, height = 3, units = "in", res = 300)
+nhood_plot
+dev.off()
+
+png("nhood.png", width = 5, height = 3, units = "in", res = 300)
+nhood_plot
+dev.off()
+
+pdf("nhood.pdf", width = 5, height = 3)
+nhood_plot
+dev.off()
+```
+
+```{r}
+jpeg("pschools.jpg", width = 5, height = 3, units = "in", res = 300)
+pschools_plot
+dev.off()
+
+png("pschools.png", width = 5, height = 3, units = "in", res = 300)
+pschools_plot
+dev.off()
+
+pdf("pschools.pdf", width = 5, height = 3)
+pschools_plot
+dev.off()
+```
+
+```{r}
+ggplot(pschools) +
+  geom_sf(shape = 23, color = "palevioletred3", fill = "palevioletred1", size = 3, alpha = 0.3)
+```
+
+```{r}
+ggplot(pschools) +
+  geom_sf(shape = 23, color = "palevioletred3", fill = "palevioletred1", size = 3, alpha = 0.3) +
+  geom_sf(data = nhood)
+```
+
+```{r}
+ggplot(data = nhood) +
+  geom_sf(fill = paleturquoise1)
+```
+```{r}
+ggplot() +
+  geom_sf(data = boundary, colour = "paleturquoise4") +
+  geom_sf(data = nhood, fill = "paleturquoise1", alpha = 0.2) +
+  geom_sf(data = pschools, shape = 23, color = "palevioletred3", fill = "palevioletred1", size = 3, alpha = 0.4)
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = boundary, colour = "paleturquoise4") +
+  geom_sf(data = nhood, color = "paleturquoise1", size = 1, fill = "paleturquoise1", alpha = 0.2) +
+  geom_sf(data = pschools, shape = 23, color = "palevioletred3", fill = "palevioletred1", size = 3, alpha = 0.4)
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = boundary) +
+  geom_sf(data = nhood, fill = "paleturquoise1", alpha = 0.2, aes(fill = "nhood")) +
+  geom_sf(data = pschools, shape = 23, fill = "palevioletred1", size = 3, alpha = 0.4) +
+  scale_fill_manual(values = "blue", name = "")
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = boundary) +
+  geom_sf(data = nhood, fill = "paleturquoise1", alpha = 0.2, 
+          aes(fill = "nhood")) +
+  geom_sf(data = pschools, shape = 23, fill = "palevioletred1", size = 3, alpha = 0.4, 
+          aes(fill = "pschools")) +
+  scale_fill_manual(values = "paleturquoise1", "palevioletred1", name = "")
+```
+
+```{r}
+ggplot() +
+  annotation_map_tile(zoomin = 0, progress = "none", type = "stamenbw") +
+  geom_sf(data = boundary) +
+  geom_sf(data = nhood, fill = "paleturquoise1", alpha = 0.2, 
+          aes(fill = "nhood")) +
+  geom_sf(data = pschools, shape = 23, fill = "palevioletred1", size = 3, alpha = 0.4, 
+          aes(fill = "pschools")) +
+  scale_fill_manual(values = "paleturquoise1", "palevioletred1", name = "") +
+    theme(panel.background = element_rect(fill = "white"),
+        legend.key = element_rect(fill = "white"))
+```
+
+```{r}
+ggplot() +
+  annotation_map_tile(zoomin = 0, progress = "none", type = "stamenbw") +
+  geom_sf(data = boundary) +
+  geom_sf(data = nhood, fill = "paleturquoise1", alpha = 0.2, 
+          aes(fill = "nhood")) +
+  geom_sf(data = pschools, shape = 23, fill = "palevioletred1", size = 3, alpha = 0.4, 
+          aes(fill = "pschools")) +
+  scale_fill_manual(values = "paleturquoise1", "palevioletred1", name = "") +
+    theme(panel.background = element_rect(fill = "white"),
+        legend.key = element_rect(fill = "white")) +
+  labs(caption = "Map tiles by Stamen Design. Data by OpenStreetMap")
+```
+
+```{r}
+ggplot() +
+  annotation_map_tile(zoomin = 0, progress = "none", type = "stamenbw") +
+  geom_sf(data = boundary) +
+  geom_sf(data = nhood, alpha = 0.2, aes(fill = "nhood")) +
+  geom_sf(data = pschools, shape = 23, size = 3, alpha = 0.4, aes(fill = "pschools")) +
+  scale_fill_manual(values = "paleturquoise1", "palevioletred1", name = "") +
+  theme(panel.background = element_rect(fill = "white"),
+        legend.key = element_rect(fill = "white")) +
+  labs(caption = "Map tiles by Stamen Design. Data by OpenStreetMap")
+```
+```{r}
+ggplot() +
+  annotation_map_tile(zoomin = 0, progress = "none", type = "stamenbw") +
+  geom_sf(data = boundary) +
+  geom_sf(data = nhood, alpha = 0.2, aes(fill = "nhood")) +
+  geom_sf(data = pschools, shape = 23, size = 3, alpha = 0.7, aes(color = "pschools")) +
+   scale_fill_manual(values = c("paleturquoise1", "palevioletred1"), name = "") +
+  theme(panel.background = element_rect(fill = "white"),
+        legend.key = element_rect(fill = "white")) +
+  labs(caption = "Map tiles by Stamen Design. Data by OpenStreetMap")
+```
+
+
